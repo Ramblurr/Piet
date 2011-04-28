@@ -1,0 +1,86 @@
+A happy number is defined by the following process.
+Starting with any positive integer, replace the number by the
+sum of the squares of its digits, and repeat the process until
+the number equals 1 (where it will stay), or it loops endlessly
+in a cycle which does not include 1. Those numbers for which this
+process ends in 1 are happy numbers, while those that do not
+end in 1 are unhappy numbers (or sad numbers[1]).
+source: http://en.wikipedia.org/wiki/Happy_number
+
+Algo below based on this C code:
+
+int happy(n) {
+    while(n != 1 && n!= 4) {
+        int tot = 0;
+        while( n > 0) {
+            int dig = n%10;
+             n /= 10;
+             tot += dig*dig;
+        }
+        n = tot;
+    }
+    return n == 1;
+} 
+
+##
+# determines if a number is happy
+# pre stack: n
+# post stack: 1 if happy, 4 if unhappy
+
+:outer_loop
+# pre: n
+# begin test n != 1 && n !=4
+dup             # n n
+dup             # n n n
+push 1          # n n n 1
+dup             # n n n 1 1
+add             # n n n 2
+dup
+mul             # n n n 4
+sub             # n n x       x is result of 4-n
+not             # n n 1/0
+# if top is 1, then goto :exit_sad
+push 1          # n n 1
+sub             # n y         y is result of 1-n
+not             # n 1/0
+# if top is 1, then goto :exit_happy!
+# end test
+
+# init total
+push 1
+not             # n 0(c)                tot=0
+roll 2,1        # c n
+
+:inner_loop
+# begin test n > 0
+dup             # c n n
+not             # c n 1/0
+# if top is 1, toto :outer_loop_end
+# end test
+# begin inner loop body
+dup             # c n n
+push 10         # c n n 10
+dup             # c n n 10 10
+roll 3,1        # c n 10 n 10
+mod             # c n 10 x             n%10
+dup             # c n 10 x x
+mul             # c n 10 x_2           dig*dig
+roll 4,3        # n 10 x c
+add             # n 10 x+c              tot += dig..
+roll 3,1        # c n 10
+div             # c n/10              n /= 10
+goto :inner_loop
+# end inner loop
+
+:outer_loop_end
+# pre: c n
+pop             # n = tot
+goto :outer_loop
+
+:exit_sad
+push "Unappy"
+out
+
+:exit_happy!
+push "Happy"
+out

@@ -1,0 +1,71 @@
+123 = 3 * (2*2*2*5+1)
+
+2
+push		2
+dup		2 2
+dup		2 2 2
+mul		4 2
+dup		4 4 2
+1
+push		1 4 4 2
+add		5 4 2
+mul		20 2
+mul		40
+1
+push		1 40
+add		41
+3
+push		3 41
+mul		123
+---
+2
+push		2 123
+dup		2 2 123
+dup		2 2 2 123
+mul		4 2 123
+dup		4 4 2 123
+mul		16 2 123
+mul		32 123
+3
+push		3 32 123
+mul		96 123
+1
+push		1 96 123
+add		97 123
+---
+dup		x x 123
+out		x 123
+1
+push		1 x 123
+add		x+1 123
+dup		x+1 x+1 123
+3
+push		3 x+1 x+1 123
+1
+push		1 3 x+1 x+1 123
+rol		x+1 123 x+1
+sub		x+1-122 x+1 123
+
+not_done:
+not		0 x+1
+
+
+done:
+not		1 x+1
+exit
+
+
+
+example
+dup		97 97
+out		97
+1
+push		1 97
+add		98
+dup		98 98
+out		98
+1
+push		1 98
+add		99
+dup		99 99
+out		99

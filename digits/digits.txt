@@ -1,0 +1,44 @@
+Based on this C code:
+
+int c = 0;
+while( n > 0) {
+ int digit = n % 10;
+ //do something with digit
+ n /= 10
+ n += 1
+}
+
+##
+# push digits of number n onto stack
+# pre stack: n
+# post stack: x y...z c
+# where x y..z are the digits of n in ascending significance
+# and c is the number of digits
+push 0          # [] n c
+roll 2,1        # [] c n
+
+push 1
+not
+push 2
+push 1
+roll
+
+:loop
+# pre c n
+dup             # [] c n n
+push 10         # [] c n n 10
+dup             # [] c n n 10 10
+roll 3,1        # [] c n 10 n 10
+mod             # [] c n 10 x
+roll 3,1        # [] c x n 10
+div             # [] c x n/10
+roll 3,-1       # [] x n c
+push 1          # [] x n c 1
+add             # [] x n c+1
+roll 2,1        # [] x c n
+dup             # [] x c n n
+not             # [] x c n 0/1
+# if 0 goto :loop
+# else goto :end
+:end
+pop             # [z y] x

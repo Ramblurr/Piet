@@ -1,0 +1,8 @@
+Pushes characters from stdin onto the stack until a '\n' (ascii 10) is encountered.
+
+pre stack: anything
+post stack: anything  a b c...z n
+where a b c ... z are the strings characters in ascending order
+and n is the number of characters in the string
+
+TODO: reverse the string so it can be popped off in a simple loop

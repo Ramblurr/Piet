@@ -1,0 +1,8 @@
+Various tools useful for a Piet programmer.
+
+
+fill_whitespace.py: 
+  fills all white pixels with Piet-safe colors to prettify images
+
+roll-vis.html: 
+  'roll' visualizer that allows you to experiment with the roll operator. just open it in a browser (works best in Chrome)
