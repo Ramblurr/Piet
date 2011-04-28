@@ -1,0 +1,125 @@
+###
+# xor(a,b)
+# stack: b a
+# x is counter
+# c is result
+push 1	# 1 b a 
+not	# 0 b a
+push 32	# x c b a		# this is the counter
+
+:loop				# expects stack [x c b a]
+push 2	# 2 x c b a		# depth
+push 1	# 1 2 x c b a		# 1 turn
+roll	# c x b a
+dup	# c c x b a
+add	# c x b a		# c += c
+
+:bring_bottom_to_top_compare>0
+# bring a to top
+push 4
+push 1
+call :negate
+# stack is [-1 4 c x b a]
+roll	# a c x b
+dup
+# push 0 for first comparison
+push 1
+not	# 0 a a c x b
+# swap 0 and a
+push 2
+push 1
+roll	# a 0 a c x b
+greater
+# if checking a
+#	stack is [t a c x b]
+# 	if t==1 then 0>a, goto :a_sub
+# 	else goto then goto :b_check
+# else if checking b
+#	stack is [t b a c x]
+# 	if t==1 then 0>b, goto :b_sub
+# 	else goto then goto :body
+
+:a_sub
+#bring b to top
+push 4
+push 1
+call :negate
+# stack is [-1 4 a c x b]
+roll	# b a c x
+dup
+push 1
+add	#b+1 b a c x
+push 1
+not	# 0 b+1 b a c x
+greater
+# stack is [t b a c x]
+# if t==1 then b+1>0, goto :a_sub_b OR :b_sub
+# else goto :body
+
+:b_check # expects stack [a c x b]
+call :bring_bottom_to_top_compare>0
+# when done stack is [b a c x]
+
+:b_sub	# expects [b a c x]
+# bring c to top
+push 3
+push 2
+roll	# c b a x
+push 1
+add	#1+c b a x
+# put stack in form [b a c x]
+push 3
+push 1
+roll	# b a c x
+goto :body
+
+:body
+# expects stack  [b a c x]
+dup	# b b a c x
+add	# b+b a c x
+push 2
+push 1
+roll	# a b c x
+dup
+add	#a+a b c x
+# bring x to top
+push 4
+push 3
+roll	# x a b c
+push 1	# 1 x a b c
+sub	# --x a b c
+:look_check
+# stack is [x a b c]
+dup
+push 1
+not	# 0 x x a b c
+greater # t x a b c
+# if t==1 then x>0, goto :prepare_loop
+# else goto :return
+
+:prepare_loop
+# stack is [x a b c] 
+# fix stack state for next iteration
+# we want [x c b a]
+roll 2,1
+roll 4,1 # [x b c a]
+roll 2,1
+roll 3,1 # [x c b a]
+goto :loop
+
+
+
+
+:negate
+# takes top of stack and negates it
+# by creating a 0 then calculating 0-x
+push 1
+not
+push 2
+push 1
+roll
+subtract
+
+
+
+
